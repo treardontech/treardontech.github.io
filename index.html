@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tim Reardon — healthcare data scientist</title>
+<meta name="description" content="Tim Reardon: critical-care nurse turned data scientist. PhD student at UA Little Rock studying how hospital data quality affects clinical AI.">
+
+<!-- Fonts: Fraunces for headings, Public Sans for everything else. Both have safe fallbacks below. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,400;9..144,600;9..144,700,50&family=Public+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+/* =========================================================
+   1. Design tokens — change colors and fonts here
+   ========================================================= */
+:root {
+  --paper: #f4f6f4;          /* page background */
+  --panel: #e9eeec;          /* light panels and timeline rail */
+  --rule: #cfd9d6;           /* hairlines */
+  --ink: #1b2730;            /* main text */
+  --ink-soft: #526069;       /* secondary text */
+  --teal: #137c7a;           /* data / research track, links */
+  --teal-deep: #0b4f4e;      /* headings */
+  --slate: #3d5a6c;          /* clinical track */
+  --amber: #b9741f;          /* one accent for "in progress" markers */
+  --army: #6e7c3c;           /* Army National Guard service band on the timeline */
+
+  --font-display: "Fraunces", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+  --font-body: "Public Sans", "Helvetica Neue", Arial, system-ui, sans-serif;
+
+  --measure: 64ch;
+  --radius: 6px;
+  --gutter: clamp(1.25rem, 4vw, 3rem);
+
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #131a1e;
+    --panel: #1b252b;
+    --rule: #2f3d45;
+    --ink: #e6ebea;
+    --ink-soft: #a3b1b6;
+    --teal: #5fc2bd;
+    --teal-deep: #a8e2de;
+    --slate: #9db7c7;
+    --amber: #e0a85a;
+    --army: #a9b86a;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #131a1e; --panel: #1b252b; --rule: #2f3d45; --ink: #e6ebea;
+  --ink-soft: #a3b1b6; --teal: #5fc2bd; --teal-deep: #a8e2de; --slate: #9db7c7; --amber: #e0a85a; --army: #a9b86a;
+}
+
+/* =========================================================
+   2. Base
+   ========================================================= */
+*, *::before, *::after { box-sizing: inherit; }
+html { scroll-behavior: smooth; scroll-padding-top: env(safe-area-inset-top, 0px); }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 1.0625rem;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+h1, h2, h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  color: var(--teal-deep);
+  line-height: 1.15;
+  margin: 0 0 0.5em;
+  letter-spacing: -0.01em;
+}
+h1 { font-size: clamp(2.1rem, 5.2vw, 3.6rem); font-weight: 700; max-width: 18ch; }
+h2 { font-size: clamp(1.6rem, 3vw, 2.2rem); }
+h3 { font-size: 1.25rem; color: var(--ink); }
+p  { margin: 0 0 1em; max-width: var(--measure); }
+a  { color: var(--teal); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+a:hover { text-decoration-thickness: 2px; }
+:focus-visible { outline: 3px solid var(--teal); outline-offset: 3px; border-radius: 2px; }
+ul { padding-left: 1.2em; }
+li { margin-bottom: 0.35em; }
+.wrap { max-width: 1120px; margin: 0 auto; padding: 0 var(--gutter); }
+section { padding: clamp(3rem, 7vw, 5.5rem) 0; border-top: 1px solid var(--rule); }
+.muted { color: var(--ink-soft); }
+.small { font-size: 0.925rem; }
+
+/* =========================================================
+   3. Header + hero
+   ========================================================= */
+header.top {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 10;
+  background: color-mix(in srgb, var(--paper) 88%, transparent);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--rule);
+}
+header.top .wrap { display: flex; align-items: center; justify-content: space-between; gap: 1rem; min-height: 60px; }
+.brand { font-family: var(--font-display); font-weight: 600; color: var(--ink); text-decoration: none; font-size: 1.1rem; }
+nav a { color: var(--ink); text-decoration: none; margin-left: 1.25rem; font-weight: 500; font-size: 0.95rem; }
+nav a:hover { color: var(--teal); text-decoration: underline; }
+@media (max-width: 640px) {
+  .brand { white-space: nowrap; }
+  nav { display: flex; gap: 0.7rem; }
+  nav a { margin-left: 0; font-size: 0.85rem; }
+  nav .hide-sm { display: none; }
+}
+
+.hero { padding: clamp(3rem, 8vw, 6rem) 0 clamp(2.5rem, 6vw, 4rem); border-top: 0; }
+.hero-grid { display: grid; grid-template-columns: 1fr minmax(240px, 340px); gap: clamp(2rem, 5vw, 4rem); align-items: start; }
+.portrait { width: 100%; height: auto; display: block; border-radius: var(--radius); border: 1px solid var(--rule); box-shadow: 0 1px 2px rgba(0,0,0,.06); }
+@media (max-width: 760px) {
+  .hero-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+  .portrait { width: 160px; }
+  .hero-grid > figure { order: -1; }
+}
+.hero .lede { font-size: clamp(1.15rem, 1.8vw, 1.35rem); max-width: 52ch; color: var(--ink); }
+.hero .roles { font-size: 1rem; color: var(--ink-soft); max-width: 60ch; }
+.facts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--rule); }
+.facts div { font-size: 0.95rem; }
+.facts strong { display: block; font-family: var(--font-display); font-size: 1.25rem; font-weight: 600; color: var(--teal-deep); margin-bottom: 0.2rem; }
+@media (max-width: 720px) { .facts { grid-template-columns: 1fr; gap: 1rem; } }
+
+/* =========================================================
+   4. Projects
+   ========================================================= */
+.featured {
+  display: grid; grid-template-columns: 1.4fr 1fr; gap: 2rem;
+  padding: 1.75rem; border: 1px solid var(--rule); border-left: 4px solid var(--teal);
+  border-radius: var(--radius); background: var(--panel); margin-bottom: 2.5rem;
+}
+.featured h3 { font-size: 1.5rem; color: var(--teal-deep); }
+.featured aside { font-size: 0.95rem; border-left: 1px solid var(--rule); padding-left: 1.5rem; }
+.featured aside dt { font-weight: 600; margin-top: 0.75rem; }
+.featured aside dt:first-child { margin-top: 0; }
+.featured aside dd { margin: 0.1rem 0 0; color: var(--ink-soft); }
+@media (max-width: 760px) { .featured { grid-template-columns: 1fr; } .featured aside { border-left: 0; padding-left: 0; border-top: 1px solid var(--rule); padding-top: 1rem; } }
+
+.projects { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: 1fr 1fr; column-gap: 3rem; }
+.projects li { padding: 1.4rem 0; border-top: 1px solid var(--rule); }
+.projects li:nth-child(-n+2) { border-top: 0; }
+.projects h3 { margin-bottom: 0.35rem; }
+.projects p { font-size: 0.975rem; margin-bottom: 0.6rem; }
+.tools { font-size: 0.875rem; color: var(--ink-soft); margin: 0; }
+.tools span { display: inline-block; padding: 0.1rem 0.5rem; border: 1px solid var(--rule); border-radius: 999px; margin: 0 0.3rem 0.3rem 0; background: var(--paper); }
+.status { display: inline-block; font-family: var(--font-body); font-size: 0.78rem; font-weight: 600; color: var(--amber); margin-left: 0.4rem; vertical-align: middle; white-space: nowrap; letter-spacing: 0.01em; }
+.status.done { color: var(--teal); }
+@media (max-width: 760px) { .projects { grid-template-columns: 1fr; } .projects li:nth-child(2) { border-top: 1px solid var(--rule); } }
+
+/* =========================================================
+   5. Timeline — two tracks, years down the middle.
+      Left = clinical work. Right = study, data and teaching.
+      Where the two sides overlap is the point of the page.
+   ========================================================= */
+.timeline { display: grid; grid-template-columns: 1fr 88px 1fr; margin-top: 1.5rem; }
+.tl-head { font-family: var(--font-display); font-weight: 600; font-size: 1.1rem; padding-bottom: 1rem; }
+.tl-head.left  { grid-column: 1; grid-row: 1; text-align: right; color: var(--slate); padding-right: 1.25rem; }
+.tl-head.right { grid-column: 3; grid-row: 1; color: var(--teal); padding-left: 1.25rem; }
+.tl-head.mid   { grid-column: 2; grid-row: 1; }
+
+.tl-year {
+  grid-column: 2; position: relative; display: flex; justify-content: center; align-items: flex-start;
+  font-family: var(--font-display); font-weight: 600; font-size: 0.95rem; color: var(--ink-soft);
+}
+.tl-year::before { content: ""; position: absolute; top: 0; bottom: 0; left: 50%; width: 2px; margin-left: -1px; background: var(--rule); }
+.tl-year span { position: relative; background: var(--paper); padding: 0.3rem 0.35rem; line-height: 1; }
+.tl-year.c span { color: var(--slate); }
+.tl-year.d span { color: var(--teal); }
+.tl-year.s span { color: var(--army); }
+/* rows inside 2012–2021 get a thicker olive rail: the years of Guard service */
+.tl-year.svc::before { width: 5px; margin-left: -2.5px; background: var(--army); }
+.tl-item.s h3 { color: var(--army); }
+.tl-legend { display: flex; align-items: center; gap: 0.6rem; max-width: none; font-size: 0.925rem; color: var(--ink-soft); margin: 0 0 1rem; }
+.tl-legend i { display: inline-block; width: 5px; height: 1.4rem; border-radius: 2px; background: var(--army); }
+
+.tl-item { padding: 0.3rem 1.25rem 1.6rem; position: relative; }
+.tl-item.left  { grid-column: 1; text-align: right; }
+.tl-item.right { grid-column: 3; }
+.tl-item h3 { font-size: 1.05rem; margin-bottom: 0.15rem; }
+.tl-item p  { font-size: 0.925rem; color: var(--ink-soft); margin: 0; }
+.tl-item.left p { margin-left: auto; }
+.tl-item .org { display: block; font-size: 0.925rem; color: var(--ink); margin-bottom: 0.25rem; }
+/* on narrow screens: one column with a rail on the left; the year moves inside each entry */
+.tl-item .mob-year, .tl-item .mob-track { display: none; }
+@media (max-width: 760px) {
+  .timeline { display: block; margin-left: 6px; }
+  .tl-head, .tl-year { display: none; }
+  .tl-item, .tl-item.left, .tl-item.right { text-align: left; padding: 0 0 1.6rem 1.25rem; border-left: 2px solid var(--rule); }
+  .tl-item.left p { margin-left: 0; }
+  .tl-item::before {
+    content: ""; position: absolute; left: -7px; top: 0.45rem; width: 12px; height: 12px; border-radius: 50%;
+    background: var(--slate); border: 2px solid var(--paper);
+  }
+  .tl-item.right::before { background: var(--teal); }
+  .tl-item.s::before { background: var(--army); }
+  .tl-item.svc { border-left: 5px solid var(--army); padding-left: calc(1.25rem - 3px); }
+  .tl-item.svc::before { left: -8.5px; }
+  .tl-item .mob-year { display: inline; font-family: var(--font-display); font-weight: 600; color: var(--ink-soft); margin-right: 0.5rem; }
+  .tl-item .mob-track { display: inline; font-family: var(--font-body); font-size: 0.8rem; font-weight: 500; color: var(--slate); }
+  .tl-item.right .mob-track { color: var(--teal); }
+  .tl-item.s .mob-track { color: var(--army); }
+}
+
+/* =========================================================
+   6. Skills, teaching, contact
+   ========================================================= */
+.cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.5rem; }
+.cols h3 { margin-bottom: 0.6rem; }
+.cols ul { padding-left: 1.1em; margin: 0; }
+.cols li { font-size: 0.975rem; }
+@media (max-width: 760px) { .cols { grid-template-columns: 1fr; gap: 1.75rem; } }
+
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; }
+@media (max-width: 760px) { .two { grid-template-columns: 1fr; gap: 2rem; } }
+
+.contact-list { list-style: none; padding: 0; margin: 1rem 0 0; }
+.contact-list li { margin-bottom: 0.5rem; }
+.btn {
+  display: inline-block; padding: 0.65rem 1.1rem; border-radius: var(--radius);
+  background: var(--teal); color: #fff; text-decoration: none; font-weight: 600; margin-right: 0.75rem; margin-top: 0.5rem;
+}
+.btn:hover { background: var(--teal-deep); }
+.btn.ghost { background: transparent; color: var(--teal); border: 1px solid var(--teal); }
+.btn.ghost:hover { background: var(--panel); }
+footer { padding: 2rem 0 3rem; border-top: 1px solid var(--rule); font-size: 0.9rem; color: var(--ink-soft); }
+</style>
+</head>
+
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#top">Tim Reardon</a>
+    <nav aria-label="Sections">
+      <a href="#projects">Projects</a>
+      <a href="#timeline">Timeline</a>
+      <a href="#skills">Skills</a>
+      <a href="#teaching" class="hide-sm">Teaching</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+<!-- ================= HERO ================= -->
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-grid">
+      <div>
+        <h1>Critical-care nurse turned data scientist.</h1>
+        <p class="lede">I spent five years charting in ICUs and emergency departments. Now I study the data that gets charted there: why it goes wrong, how to measure that, and what it does to the AI built on top of it.</p>
+        <p class="roles">PhD student in Computer and Information Science at the University of Arkansas at Little Rock. Graduate assistant at the Emerging Analytics Center. Primary instructor and curriculum co-creator for the graduate certificate in Healthcare Informatics, teaching Introduction to Healthcare Informatics and Healthcare Informatics Projects. RN, CCRN. U.S. Army veteran.</p>
+      </div>
+      <!-- Headshot: keep tim-reardon.jpg in the same folder as index.html -->
+      <figure style="margin:0">
+        <img class="portrait" src="tim-reardon.jpg" width="800" height="1020" alt="Tim Reardon, smiling, in a navy blazer and light blue shirt">
+      </figure>
+    </div>
+
+    <div class="facts">
+      <div><strong>Bedside</strong>Five-plus years in ICU and ED nursing, including charge nurse and rapid-response lead. I know how hospital data is actually created.</div>
+      <div><strong>Data quality</strong>M.S. in Information Quality and ISO 8000 Master Data Quality Manager. I measure data problems and fix them at the source.</div>
+      <div><strong>Research</strong>Dissertation on how rural hospital data quality affects AI heart-failure detection from chest X-rays.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PROJECTS ================= -->
+<section id="projects">
+  <div class="wrap">
+    <h2>Projects</h2>
+    <p class="muted">Research, code, and applied work. Most of it sits where clinical care and data quality meet.</p>
+
+    <!-- Featured project -->
+    <article class="featured">
+      <div>
+        <h3>Does bad hospital data break chest X-ray AI? <span class="status">In progress</span></h3>
+        <p>My dissertation. AI models that spot acute heart failure on chest X-rays are trained on clean images from large academic hospitals. Rural hospitals produce messier data: portable films, older scanners, missing metadata, inconsistent labeling. I'm measuring how that degradation changes model performance, using data quality dimensions from Wang and Strong and a sociotechnical view of how the data gets made.</p>
+        <p>Core experiments use public datasets (MIMIC-CXR and CheXpert), with a UAMS data partnership as a possible extension. Proposal outline and literature search strategy are complete.</p>
+      </div>
+      <aside>
+        <dl>
+          <dt>Data</dt><dd>MIMIC-CXR, CheXpert</dd>
+          <dt>Methods</dt><dd>Image degradation experiments, classifier evaluation, data quality dimension mapping</dd>
+          <dt>Tools</dt><dd>Python, PyTorch, OpenCV, pandas</dd>
+          <dt>Program</dt><dd>PhD, UA Little Rock (2025–)</dd>
+        </dl>
+      </aside>
+    </article>
+
+    <ul class="projects">
+      <li>
+        <h3>Spelling correction for medication and allergy records <span class="status">In progress</span></h3>
+        <p>Misspelled drug and allergy names in the EHR are a patient-safety problem and a data-quality problem. This project tests whether a BERT-based language model can correct them automatically. Runs locally on Apple Silicon with Hugging Face Transformers.</p>
+        <p class="tools"><span>Python</span><span>PyTorch</span><span>Hugging Face</span><span>BERT</span></p>
+      </li>
+      <li>
+        <h3>Data Washing Machine <span class="status done">Complete</span></h3>
+        <p>Contributor to a multi-module Python pipeline for string similarity and unsupervised data cleaning, built around entity resolution for records that describe the same thing in different ways. Related to my long-running interest in patient identity management and EHR deduplication (MPI/EMPI).</p>
+        <p class="tools"><span>Python</span><span>Conda</span><span>String similarity</span><span>Entity resolution</span></p>
+      </li>
+      <li>
+        <h3>Which statistical test? An executable notebook <span class="status done">Complete</span></h3>
+        <p>A domain-agnostic Jupyter reference for picking and running the right statistical test. Three Graphviz decision flowcharts route from "what is my goal" to a specific test, followed by ten sections of working code on a synthetic dataset that includes skewed columns, missing values, paired measures, and injected outliers.</p>
+        <p class="tools"><span>pandas</span><span>scipy</span><span>statsmodels</span><span>seaborn</span><span>Graphviz</span></p>
+      </li>
+      <li>
+        <h3>Image processing in Google Colab <span class="status done">Complete</span></h3>
+        <p>Coursework building up the image-handling skills the dissertation needs: loading, transforming, filtering, and analyzing images with OpenCV and PIL on Colab GPUs. Also coursework in Pattern Recognition (Bishop's PRML) and Hadoop MapReduce/YARN for distributed data.</p>
+        <p class="tools"><span>OpenCV</span><span>PIL</span><span>Google Colab</span><span>NumPy</span></p>
+      </li>
+      <li>
+        <h3>Privacy policy for a live application <span class="status">In progress</span></h3>
+        <p>Drafting the internal privacy policy, then the public privacy notice, for Heirfair, a real-world application. Data governance work: what is collected, why, who can see it, and how long it is kept.</p>
+        <p class="tools"><span>Data governance</span><span>Privacy</span><span>Policy writing</span></p>
+      </li>
+      <li>
+        <h3>Clinical quality improvement <span class="status done">Adopted</span></h3>
+        <p>Developed a proning protocol for intubated ARDS patients, presented to the Medical Executive Committee at the Director of Nursing's request for adoption as official protocol. Updated DKA and RSI protocols to current standards of care. Designed an ED medication-omission performance metric.</p>
+        <p class="tools"><span>Protocol design</span><span>Performance metrics</span><span>ICU</span></p>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- ================= TIMELINE ================= -->
+<section id="timeline">
+  <div class="wrap">
+    <h2>Timeline</h2>
+    <p class="muted">Two tracks that overlap: clinical work on one side; study, service, and data work on the other. Since 2024 I have been doing both at once.</p>
+    <p class="tl-legend"><i aria-hidden="true"></i>The olive stretch of the line marks my U.S. Army National Guard service, 2012 to 2021.</p>
+
+    <div class="timeline">
+      <div class="tl-head left">Clinical</div>
+      <div class="tl-head mid"></div>
+      <div class="tl-head right">Study, service, data</div>
+
+      <!-- How to add an entry: give a year cell and an item the same grid-row number.
+           Item classes: "left" = clinical, "right" = study/service/data, "s" = military entry.
+           "svc" on a year cell (and on the item) draws the olive Guard-service band through that row.
+           A second entry in the same year gets an empty year cell (no span). -->
+
+      <div class="tl-year s svc" style="grid-row:2"><span>2012</span></div>
+      <div class="tl-item right s svc" style="grid-row:2">
+        <h3><span class="mob-year">2012</span>Enlisted, U.S. Army National Guard <span class="mob-track">service</span></h3>
+        <span class="org">Private, Military Intelligence</span>
+        <p>Start of nine years of service, 2012 to 2021.</p>
+      </div>
+
+      <div class="tl-year d svc" style="grid-row:3"><span>2013</span></div>
+      <div class="tl-item right svc" style="grid-row:3">
+        <h3><span class="mob-year">2013–2015</span>A.A.S., Military Intelligence Operations <span class="mob-track">study</span></h3>
+        <span class="org">Cochise College, Fort Huachuca</span>
+      </div>
+
+      <div class="tl-year d svc" style="grid-row:4"><span>2016</span></div>
+      <div class="tl-item right svc" style="grid-row:4">
+        <h3><span class="mob-year">2016–2019</span>B.S. in Nursing, cum laude <span class="mob-track">study</span></h3>
+        <span class="org">Southern Arkansas University</span>
+        <p>Class president. Sigma Theta Tau nursing honor society. President's List. Poster at the Arkansas Nursing Research Conference on a diabetes self-management program versus standard care.</p>
+      </div>
+
+      <div class="tl-year c svc" style="grid-row:5"><span>2019</span></div>
+      <div class="tl-item left svc" style="grid-row:5">
+        <h3><span class="mob-year">2019–2020</span>Charge Nurse, Step-Down Unit <span class="mob-track">clinical</span></h3>
+        <span class="org">Medical Center of South Arkansas</span>
+        <p>Intermediate medical care and psychiatry. Refined the admissions process for the medical withdrawal program.</p>
+      </div>
+
+      <div class="tl-year s svc" style="grid-row:6"><span>Aug 2019</span></div>
+      <div class="tl-item right s svc" style="grid-row:6">
+        <h3><span class="mob-year">Aug 2019</span>Basic Leader Course <span class="mob-track">service</span></h3>
+        <span class="org">3rd NCOA Training Battalion, Camp Shelby, Mississippi</span>
+        <p>The Army's first course in noncommissioned officer leadership.</p>
+      </div>
+
+      <div class="tl-year c svc" style="grid-row:7"><span>2020</span></div>
+      <div class="tl-item left svc" style="grid-row:7">
+        <h3><span class="mob-year">2020–2021</span>Critical Care Nurse <span class="mob-track">clinical</span></h3>
+        <span class="org">Northern Louisiana Medical Center, Ruston</span>
+        <p>17-bed ICU. Rapid response and ACLS code leader. Interpreted labs and hemodynamic monitoring to guide care. Updated DKA and RSI protocols.</p>
+      </div>
+
+      <div class="tl-year c svc" style="grid-row:8"><span>2021</span></div>
+      <div class="tl-item left svc" style="grid-row:8">
+        <h3><span class="mob-year">2021–2022</span>ICU Charge Nurse <span class="mob-track">clinical</span></h3>
+        <span class="org">South Arkansas Regional Hospital</span>
+        <p>Oversaw a 16-bed combined MICU/CVICU while carrying a patient load. Oriented new nurses.</p>
+      </div>
+
+      <div class="tl-year svc" style="grid-row:9"></div>
+      <div class="tl-item left svc" style="grid-row:9">
+        <h3><span class="mob-year">2021</span>CCRN certification <span class="mob-track">clinical</span></h3>
+        <span class="org">American Association of Critical-Care Nurses</span>
+        <p>Board certification in adult critical care nursing, held since 2021.</p>
+      </div>
+
+      <div class="tl-year svc" style="grid-row:10"></div>
+      <div class="tl-item right s svc" style="grid-row:10">
+        <h3><span class="mob-year">2021</span>Completed Guard service as a Sergeant <span class="mob-track">service</span></h3>
+        <span class="org">U.S. Army National Guard, 2012–2021</span>
+        <p>Developed training sessions for soldiers on a range of military topics. Held a Top Secret clearance throughout.</p>
+      </div>
+
+      <div class="tl-year c" style="grid-row:11"><span>2022</span></div>
+      <div class="tl-item left" style="grid-row:11">
+        <h3><span class="mob-year">2022–present</span>Clinical Operations Manager <span class="mob-track">clinical</span></h3>
+        <span class="org">Jumper Anesthesia LLC</span>
+        <p>Runs the operational and administrative side of a private anesthesiology practice: scheduling and HIPAA-compliant documentation management.</p>
+      </div>
+
+      <div class="tl-year d" style="grid-row:12"><span>2024</span></div>
+      <div class="tl-item right" style="grid-row:12">
+        <h3><span class="mob-year">2024–2025</span>M.S. in Information Quality <span class="mob-track">study</span></h3>
+        <span class="org">University of Arkansas at Little Rock</span>
+        <p>Completed December 2025. ISO 8000 Master Data Quality Manager certification (ECCMA, 2024) alongside it.</p>
+      </div>
+
+      <div class="tl-year d" style="grid-row:13"><span>2025</span></div>
+      <div class="tl-item right" style="grid-row:13">
+        <h3><span class="mob-year">2025–present</span>PhD in Computer and Information Science <span class="mob-track">study</span></h3>
+        <span class="org">University of Arkansas at Little Rock</span>
+        <p>Information Science track. Dissertation on how rural hospital data quality affects AI heart-failure detection from chest X-rays.</p>
+      </div>
+
+      <div class="tl-year" style="grid-row:14"></div>
+      <div class="tl-item right" style="grid-row:14">
+        <h3><span class="mob-year">2025–present</span>Graduate Assistant, Emerging Analytics Center <span class="mob-track">data</span></h3>
+        <span class="org">University of Arkansas at Little Rock</span>
+        <p>Works on a grants committee with government and academic partners, funding research in education, workforce development, health informatics, and quantum computing.</p>
+      </div>
+
+      <div class="tl-year d" style="grid-row:15"><span>2026</span></div>
+      <div class="tl-item right" style="grid-row:15">
+        <h3><span class="mob-year">2026–present</span>Graduate certificate in Healthcare Informatics <span class="mob-track">teaching</span></h3>
+        <span class="org">University of Arkansas at Little Rock</span>
+        <p>Co-created the curriculum and serve as primary instructor for both courses: Introduction to Healthcare Informatics and Healthcare Informatics Projects.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SKILLS ================= -->
+<section id="skills">
+  <div class="wrap">
+    <h2>Skills</h2>
+    <div class="cols">
+      <div>
+        <h3>Analysis and modeling</h3>
+        <ul>
+          <li>Python: pandas, NumPy, scipy, statsmodels</li>
+          <li>Visualization: matplotlib, seaborn, Graphviz, Tableau</li>
+          <li>R and RStudio; Excel</li>
+          <li>Hugging Face Transformers, PyTorch (BERT fine-tuning)</li>
+          <li>Image processing with OpenCV and PIL</li>
+          <li>Hadoop MapReduce and YARN fundamentals</li>
+          <li>Jupyter, VS Code, Conda, Google Colab</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Data quality and governance</h3>
+        <ul>
+          <li>ISO 8000 Master Data Quality Manager</li>
+          <li>Data quality dimensions and assessment (Wang and Strong)</li>
+          <li>Entity resolution, record linkage, and deduplication</li>
+          <li>Patient identity management (MPI/EMPI)</li>
+          <li>HIPAA-compliant documentation; privacy policy drafting</li>
+          <li>Agile and Scrum</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Clinical</h3>
+        <ul>
+          <li>Registered Nurse (Arkansas, multistate compact)</li>
+          <li>CCRN, adult critical care</li>
+          <li>ICU, CVICU, step-down, and ED nursing</li>
+          <li>Hemodynamic monitoring, ventilators, IABP, Impella, EKOS</li>
+          <li>Protocol development and quality improvement</li>
+          <li>Rapid response and ACLS code leadership</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= TEACHING, WRITING, SERVICE ================= -->
+<section id="teaching">
+  <div class="wrap">
+    <div class="two">
+      <div>
+        <h2>Teaching and service</h2>
+        <ul>
+          <li><strong>Primary instructor and curriculum co-creator</strong>, graduate certificate in Healthcare Informatics, UA Little Rock (2026–). Teaches the program's two courses: Introduction to Healthcare Informatics and Healthcare Informatics Projects.</li>
+          <li><strong>Visiting lecturer</strong>, Department of Nursing, Southern Arkansas University: emergency and disaster response, clinical skills, and the future of AI in the clinical environment</li>
+          <li><strong>Mentor and organizer</strong>, UA Little Rock AI Hackathon and HealthTech Startup Week (2026). Gave clinical advice and technical expertise to participating teams.</li>
+          <li><strong>Contributor</strong>, ABET self-study and program assessment work at UA Little Rock</li>
+          <li><strong>Author</strong>, "Understanding Information," an introduction to information science, data science, and information theory written for incoming undergraduates</li>
+          <li><strong>Volunteer</strong>, COVID-19 and influenza vaccination clinics in underserved Union County communities, funded by the Arkansas Department of Health</li>
+        </ul>
+      </div>
+      <div>
+        <h2>Writing and presentations</h2>
+        <ul>
+          <li><em>Outcomes of a Diabetes Self-Management Program versus Standard of Care.</em> Poster, Arkansas Nursing Research Conference, Little Rock, April 2019.</li>
+          <li>Proning protocol for intubated ARDS patients, presented to a hospital Medical Executive Committee for adoption.</li>
+          <li>Clinical informatics paper in preparation, targeting submission by the end of 2026.</li>
+        </ul>
+        <h3 style="margin-top:1.5rem">Where I'm headed</h3>
+        <p class="small">Healthcare data science with an eye on a Chief Data Officer role: someone who has charted the data, cleaned the data, and can be trusted to decide what it should be used for.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CONTACT ================= -->
+<section id="contact">
+  <div class="wrap">
+    <h2>Contact</h2>
+    <p>Based in Arkansas. Open to collaboration on clinical data quality, health informatics, and applied AI in rural health.</p>
+    <!-- The "Download CV" button needs a file named cv.pdf in the repo. To add LinkedIn, copy the GitHub <li> line and change the link. -->
+    <a class="btn" href="mailto:reardontim79@gmail.com">Email me</a>
+    <a class="btn ghost" href="cv.pdf">Download CV</a>
+    <ul class="contact-list small">
+      <li><a href="https://github.com/treardontech">GitHub</a></li>
+    </ul>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">Tim Reardon. Updated October 2026. Built as a single HTML file; hosted on GitHub Pages.</div>
+</footer>
+
+</body>
+</html>
